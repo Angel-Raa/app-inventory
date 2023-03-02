@@ -5,12 +5,9 @@ import com.company.araa.Inventory.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -29,19 +26,14 @@ public class CategoryController {
         return service.findByIdCategory(id);
     }
 
-    @PostMapping("/add")
+    @PostMapping("/category")
     public ResponseEntity<Category> addCategory(@RequestBody @Valid Category category) {
         return service.saveCategory(category);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateCategory(@PathVariable Long id, @RequestBody @Valid Category category, BindingResult result){
-        if(result.hasErrors()){
-            Map<String, String> errores = new HashMap<>();
-            result.getFieldErrors().forEach(err -> errores.put("Error " + err.getField(), "Campo incorrect"));
-            return ResponseEntity.badRequest().body(errores);
-        }
-        return  ResponseEntity.ok(service.updateCategory(id, category));
+    @PutMapping("/category/{id}")
+    public ResponseEntity<?> updateCategory(@PathVariable Long id, @RequestBody @Valid Category category) {
+        return ResponseEntity.ok(service.updateCategory(id, category));
     }
 
 
