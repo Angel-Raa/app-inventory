@@ -10,8 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -30,9 +33,11 @@ public class CategoryServiceImpl implements CategoryService {
     public ResponseEntity<Optional<Category>> findByIdCategory(Long id) {
         Optional<Category> category = repository.findById(id);
         if (category.isPresent()) {
-            return new ResponseEntity<>(repository.findById(id), HttpStatus.OK);
+            return new ResponseEntity<>(category, HttpStatus.OK);
         } else {
             throw new ResourceNotFondException("Could not find", id.toString());
+
+
         }
 
     }
@@ -62,4 +67,13 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryId.isPresent() ? ResponseEntity.notFound().build() : ResponseEntity.noContent().build();
 
     }
+
+    @ExceptionHandler(ResourceNotFondException.class)
+    public  ResponseEntity<?> handleResourceNotFondException(ResourceNotFondException es){
+        Map<String, Object> error = new HashMap<>();
+        error.put("message", es.getMessage());
+        return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+
 }
